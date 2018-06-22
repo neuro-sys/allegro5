@@ -383,10 +383,16 @@ static bool osx_get_monitor_info(int adapter, ALLEGRO_MONITOR_INFO* info)
    CGError err = CGGetActiveDisplayList(max_displays, displays, &count);
    if (err == kCGErrorSuccess && adapter >= 0 && adapter < (int) count) {
       CGRect rc = CGDisplayBounds(displays[adapter]);
+      CGSize size = CGDisplayScreenSize(displays[adapter]);
       info->x1 = (int) rc.origin.x;
       info->x2 = (int) (rc.origin.x + rc.size.width);
       info->y1 = (int) rc.origin.y;
       info->y2 = (int) (rc.origin.y + rc.size.height);
+#define INCHES_PER_MM 0.039370
+      int dpi_hori = (info->x2 - info->x1) / (INCHES_PER_MM * size.width);
+      int dpi_vert = (info->y2 - info->y1) / (INCHES_PER_MM * size.height);
+#undef INCHES_PER_MM
+      info->dpi = sqrt(dpi_hori * dpi_vert);
       ALLEGRO_INFO("Display %d has coordinates (%d, %d) - (%d, %d)\n",
          adapter, info->x1, info->y1, info->x2, info->y2);
       return true;
