@@ -32,6 +32,7 @@
 
 #include <windows.h>
 #include <mmsystem.h>
+#include <ShellScalingAPI.h>
 
 ALLEGRO_DEBUG_CHANNEL("system")
 
@@ -498,6 +499,27 @@ static int win_find_nth_adapter_with_desktop(DISPLAY_DEVICE* pdd, int adapter)
    return false;
 }
 
+BOOL CALLBACK monitor_enum_proc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData)
+{
+    HMONITOR *h_monitor = (HMONITOR *) dwData;
+
+    if (hMonitor) {
+        *h_monitor = hMonitor;
+        return false;
+    }
+
+    return true;
+}
+
+static HMONITOR win_get_monitor()
+{
+    HMONITOR h_monitor;
+
+    EnumDisplayMonitors(NULL, NULL, monitor_enum_proc, (LPARAM) &h_monitor);
+
+    return h_monitor;
+}
+
 static bool win_get_monitor_info(int adapter, ALLEGRO_MONITOR_INFO *info)
 {
    DISPLAY_DEVICE dd;
@@ -524,6 +546,16 @@ static bool win_get_monitor_info(int adapter, ALLEGRO_MONITOR_INFO *info)
    info->y1 = dm.dmPosition.y;
    info->x2 = info->x1 + dm.dmPelsWidth;
    info->y2 = info->y1 + dm.dmPelsHeight;
+
+   int x2_mm;
+   int y2_mm;
+   GetDpiForMonitor(win_get_monitor(), 0, &x2_mm, &y2_mm);
+#define INCHES_PER_MM 0.039370
+   int dpi_hori = (info->x2 - info->x1) / (INCHES_PER_MM * x2_mm);
+   int dpi_vert = (info->y2 - info->y1) / (INCHES_PER_MM * y2_mm);
+#undef INCHES_PER_MM
+   info->dpi = sqrt(dpi_hori * dpi_vert);
+
    return true;
 }
 
