@@ -38,6 +38,8 @@ bool al_get_monitor_info(int adapter, ALLEGRO_MONITOR_INFO *info)
 {
    ALLEGRO_SYSTEM *system = al_get_system_driver();
 
+   info->dpi = 0;
+
    if (adapter < al_get_num_video_adapters()) {
       if (system && system->vt && system->vt->get_monitor_info) {
          return system->vt->get_monitor_info(adapter, info);

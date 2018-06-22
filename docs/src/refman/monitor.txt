@@ -15,7 +15,7 @@ left or above the primary display. x2, y2 are the
 coordinates one beyond the bottom right pixel, so that
 x2-x1 gives the width and y2-y1 gives the height of the
 display. dpi will contain dots per inch on the primary
-display, otherwise will be negative.
+display, otherwise will be zero.
 
 ~~~~c
 typedef struct ALLEGRO_MONITOR_INFO
