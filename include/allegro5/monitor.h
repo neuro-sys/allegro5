@@ -16,6 +16,7 @@ typedef struct ALLEGRO_MONITOR_INFO
    int y1;
    int x2;
    int y2;
+   int dpi;
 } ALLEGRO_MONITOR_INFO;
 
 enum {

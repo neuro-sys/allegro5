@@ -44,7 +44,7 @@ bool al_get_monitor_info(int adapter, ALLEGRO_MONITOR_INFO *info)
       }
    }
 
-   info->x1 = info->y1 = info->x2 = info->y2 = INT_MAX;
+   info->x1 = info->y1 = info->x2 = info->y2 = info->dpi = INT_MAX;
    return false;
 }
 

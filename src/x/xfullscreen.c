@@ -922,6 +922,13 @@ bool _al_xglx_get_monitor_info(ALLEGRO_SYSTEM_XGLX *s, int adapter, ALLEGRO_MONI
       info->y1 = 0;
       info->x2 = DisplayWidth(s->x11display, DefaultScreen(s->x11display));
       info->y2 = DisplayHeight(s->x11display, DefaultScreen(s->x11display));
+      int x2_mm = DisplayWidthMM(s->x11display, DefaultScreen(s->x11display));
+      int y2_mm = DisplayHeightMM(s->x11display, DefaultScreen(s->x11display));
+#define INCHES_PER_MM 0.039370
+      int dpi_hori = (info->x2 - info->x1) / (INCHES_PER_MM * x2_mm);
+      int dpi_vert = (info->y2 - info->y1) / (INCHES_PER_MM * y2_mm);
+#undef INCHES_PER_MM
+      info->dpi = sqrt(dpi_hori * dpi_vert);
       _al_mutex_unlock(&s->lock);
       return true;
    }

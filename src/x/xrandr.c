@@ -4,6 +4,8 @@
 #include "allegro5/internal/aintern_xfullscreen.h"
 #include "allegro5/internal/aintern_xsystem.h"
 
+#include <math.h>
+
 #ifdef ALLEGRO_XWINDOWS_WITH_XRANDR
 
 ALLEGRO_DEBUG_CHANNEL("xrandr")
@@ -655,6 +657,12 @@ static bool xrandr_get_monitor_info(ALLEGRO_SYSTEM_XGLX *s, int adapter, ALLEGRO
    mi->y1 = crtc->y;
    mi->x2 = crtc->x + crtc->width;
    mi->y2 = crtc->y + crtc->height;
+#define INCHES_PER_MM 0.039370
+   int dpi_hori = (mi->x2 - mi->x1) / (INCHES_PER_MM * output->mm_width);
+   int dpi_vert = (mi->y2 - mi->y1) / (INCHES_PER_MM * output->mm_height);
+#undef INCHES_PER_MM
+   mi->dpi = sqrt(dpi_hori * dpi_vert);
+
    return true;
 }
 

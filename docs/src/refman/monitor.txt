@@ -14,7 +14,8 @@ Other monitors can have negative values if they are to the
 left or above the primary display. x2, y2 are the
 coordinates one beyond the bottom right pixel, so that
 x2-x1 gives the width and y2-y1 gives the height of the
-display.
+display. dpi will contain dots per inch on the primary
+display, otherwise will be negative.
 
 ~~~~c
 typedef struct ALLEGRO_MONITOR_INFO
@@ -23,6 +24,7 @@ typedef struct ALLEGRO_MONITOR_INFO
    int y1;
    int x2;
    int y2;
+   int dpi;
 } ALLEGRO_MONITOR_INFO;
 ~~~~
 
