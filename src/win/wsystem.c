@@ -540,11 +540,17 @@ BOOL CALLBACK monitor_enum_proc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMo
    return true;
 }
 
-static HMONITOR win_get_monitor()
+static HMONITOR win_get_monitor(ALLEGRO_MONITOR_INFO *info)
 {
    HMONITOR h_monitor;
+   RECT rect;
 
-   EnumDisplayMonitors(NULL, NULL, monitor_enum_proc, (LPARAM) &h_monitor);
+   rect.left = info->x1;
+   rect.top = info->y1;
+   rect.right = info->x2;
+   rect.bototm = info->y2;
+
+   EnumDisplayMonitors(NULL, &rect, monitor_enum_proc, (LPARAM) &h_monitor);
 
    return h_monitor;
 }
@@ -578,7 +584,7 @@ static int win_get_monitor_dpi(int adapter)
       return 0;
    }
 
-   imp_GetDpiForMonitor(win_get_monitor(), 0, &dpi_hori, &dpi_vert);
+   imp_GetDpiForMonitor(win_get_monitor(&info), 0, &dpi_hori, &dpi_vert);
 
    FreeLibrary(shcore_dll);
 
